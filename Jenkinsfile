@@ -1,28 +1,40 @@
 pipeline {
     agent any
-
+    environment {
+        GITHUB_CREDENTIALS = 'github-token'  // Ye wahi credentials ID hai jo aapne Jenkins mein create kiya tha
+    }
     stages {
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
-                git 'https://github.com/your-username/zomato-clone.git'
+                // GitHub repository se code ko checkout karna
+                git credentialsId: "${GITHUB_CREDENTIALS}", url: 'https://github.com/SHA-shwatdubey/zomato-clone.git'
             }
         }
-
         stage('Build Backend') {
             steps {
-                sh 'docker build -t zomato-backend ./backend'
+                // Backend ko build karna
+                script {
+                    // Example build command for the backend
+                    sh 'cd backend && npm install && npm run build'
+                }
             }
         }
-
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t zomato-frontend ./frontend'
+                // Frontend ko build karna
+                script {
+                    // Example build command for the frontend
+                    sh 'cd frontend && npm install && npm run build'
+                }
             }
         }
-
         stage('Run App') {
             steps {
-                sh 'docker-compose up -d'
+                // App ko run karna
+                script {
+                    // Example command to start the app
+                    sh 'docker-compose up -d'
+                }
             }
         }
     }
