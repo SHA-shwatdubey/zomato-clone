@@ -2,28 +2,28 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/your-image-name'
+        DOCKER_IMAGE = 'your-dockerhub-username/zomato-clone'
         DOCKER_TAG = 'latest'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/your-username/your-repo.git'
+                git credentialsId: 'github-token', url: 'https://github.com/SHA-shwatdubey/zomato-clone.git'
             }
         }
 
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                // e.g., npm run build or mvn package
+                // Example: npm install && npm run build
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                // e.g., npm test or mvn test
+                // Example: npm test
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying the application...'
-                // e.g., docker run or kubectl apply
+                // Example: docker run -d -p 3000:3000 your-dockerhub-username/zomato-clone:latest
             }
         }
     }
