@@ -5,14 +5,13 @@ pipeline {
         GIT_REPO = 'https://github.com/SHA-shwatdubey/zomato-clone.git' // Update with your repo URL
         DOCKER_IMAGE_FRONTEND = 'zomato-frontend'
         DOCKER_IMAGE_BACKEND = 'zomato-backend'
-        GITHUB_CREDENTIALS = 'github-token' // This should match the credentials ID
     }
 
     stages {
         stage('Clone Repo') {
             steps {
                 // Using credentials to securely clone the repository
-                git credentialsId: "${GITHUB_CREDENTIALS}", url: "${GIT_REPO}"
+                git credentialsId: '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', url: "${GIT_REPO}"
             }
         }
 
