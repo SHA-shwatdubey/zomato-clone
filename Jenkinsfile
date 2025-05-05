@@ -35,9 +35,9 @@ pipeline {
 
         stage('Run App') {
             steps {
-                // Run the app using docker-compose
+                // Run the app using docker-compose (use 'bat' for Windows)
                 script {
-                    sh 'docker-compose up -d'
+                    bat 'docker-compose up -d'
                 }
             }
         }
