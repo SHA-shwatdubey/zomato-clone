@@ -9,30 +9,33 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git credentialsId: 'github-token', url: 'https://github.com/SHA-shwatdubey/zomato-clone.git'
+                git 'https://github.com/SHA-shwatdubey/zomato-clone.git'
             }
         }
 
-        stage('Build') {
-            steps {
-                echo 'Building the application...'
-                // Example: npm install && npm run build
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                // Example: npm test
-            }
-        }
-
-        stage('Docker Build & Push') {
+        stage('Frontend Docker Build & Push') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    // Frontend Docker image build
+                    docker.build("${DOCKER_IMAGE}-frontend:${DOCKER_TAG}", './frontend')
+                    
+                    // Push to Docker Hub
                     docker.withRegistry('', 'docker-hub-credentials-id') {
-                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                        docker.image("${DOCKER_IMAGE}-frontend:${DOCKER_TAG}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Backend Docker Build & Push') {
+            steps {
+                script {
+                    // Backend Docker image build
+                    docker.build("${DOCKER_IMAGE}-backend:${DOCKER_TAG}", './backend')
+                    
+                    // Push to Docker Hub
+                    docker.withRegistry('', 'docker-hub-credentials-id') {
+                        docker.image("${DOCKER_IMAGE}-backend:${DOCKER_TAG}").push()
                     }
                 }
             }
@@ -41,8 +44,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying the application...'
-                // Example: docker run -d -p 3000:3000 your-dockerhub-username/zomato-clone:latest
+                // e.g., docker run or kubectl apply
             }
         }
     }
 }
+
