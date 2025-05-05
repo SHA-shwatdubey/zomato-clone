@@ -1,40 +1,47 @@
 pipeline {
     agent any
+
     environment {
-        GITHUB_CREDENTIALS = 'github-token'  // Ye wahi credentials ID hai jo aapne Jenkins mein create kiya tha
+        DOCKER_IMAGE = 'your-dockerhub-username/your-image-name'
+        DOCKER_TAG = 'latest'
     }
+
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                // GitHub repository se code ko checkout karna
-                git credentialsId: "${GITHUB_CREDENTIALS}", url: 'https://github.com/SHA-shwatdubey/zomato-clone.git'
+                git 'https://github.com/your-username/your-repo.git'
             }
         }
-        stage('Build Backend') {
+
+        stage('Build') {
             steps {
-                // Backend ko build karna
+                echo 'Building the application...'
+                // e.g., npm run build or mvn package
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // e.g., npm test or mvn test
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
                 script {
-                    // Example build command for the backend
-                    sh 'cd backend && npm install && npm run build'
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    docker.withRegistry('', 'docker-hub-credentials-id') {
+                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                    }
                 }
             }
         }
-        stage('Build Frontend') {
+
+        stage('Deploy') {
             steps {
-                // Frontend ko build karna
-                script {
-                    // Example build command for the frontend
-                    sh 'cd frontend && npm install && npm run build'
-                }
-            }
-        }
-        stage('Run App') {
-            steps {
-                // App ko run karna
-                script {
-                    // Example command to start the app
-                    sh 'docker-compose up -d'
-                }
+                echo 'Deploying the application...'
+                // e.g., docker run or kubectl apply
             }
         }
     }
