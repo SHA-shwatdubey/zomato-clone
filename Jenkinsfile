@@ -11,7 +11,7 @@ pipeline {
         stage('Clone Repo') {
             steps {
                 // Using credentials to securely clone the repository
-                git credentialsId: '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', url: "${https://github.com/SHA-shwatdubey/zomato-clone.git}"
+                git credentialsId: 'github-token', url: GIT_REPO
             }
         }
 
